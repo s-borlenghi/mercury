@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import App from "../App";        // ✅ .tsx
-
+import App from "../App";
 describe("App (render)", () => {
   const html = renderToStaticMarkup(<App />);
 
