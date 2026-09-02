@@ -1,9 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { X } from "lucide-react";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
+import Alert from "@mui/material/Alert";
+import ListSubheader from "@mui/material/ListSubheader";
 import { CATEGORIES, CATEGORY_NAMES } from "../data/categories";
 import type { CategoryName, NewTransaction } from "../types";
 
 interface AddFormProps {
+  open: boolean;
   onClose: () => void;
   onAdd: (t: NewTransaction) => void;
 }
@@ -14,7 +26,7 @@ const todayLocal = (): string => {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 };
 
-export default function AddForm({ onClose, onAdd }: AddFormProps) {
+export default function AddForm({ open, onClose, onAdd }: AddFormProps) {
   const [desc, setDesc] = useState("");
   const [amount, setAmount] = useState("");
   const [cat, setCat] = useState<CategoryName>("Groceries");
@@ -29,63 +41,58 @@ export default function AddForm({ onClose, onAdd }: AddFormProps) {
     onClose();
   };
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
-
   const byType = (type: "income" | "expense") =>
     CATEGORY_NAMES.filter((c) => CATEGORIES[c].type === type);
 
   return (
-    <div className="mrc-overlay" onMouseDown={onClose}>
-      <div className="mrc-modal" role="dialog" aria-label="New Transaction"
-        onMouseDown={(e) => e.stopPropagation()}>
-        <div className="mrc-modal-head">
-          <h3>New Transaction</h3>
-          <button className="mrc-icon-btn" onClick={onClose} aria-label="Close">
-            <X size={18} />
-          </button>
-        </div>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs"
+      aria-label="New Transaction"
+      keepMounted={false}
+      slotProps={{ transition: { onExited: () => { setDesc(""); setAmount(""); setError(""); setDate(todayLocal()); } } }}
+    >
+      <DialogTitle sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", pb: 1 }}>
+        New Transaction
+        <IconButton onClick={onClose} aria-label="Close" size="small" sx={{ color: "text.secondary" }}>
+          <X size={18} />
+        </IconButton>
+      </DialogTitle>
 
-        <label className="mrc-field">
-          <span>Description</span>
-          <input value={desc} onChange={(e) => setDesc(e.target.value)}
-            placeholder="e.g. Weekly groceries" autoFocus />
-        </label>
+      <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, pt: "8px !important" }}>
+        <TextField
+          label="Description" value={desc} onChange={(e) => setDesc(e.target.value)}
+          placeholder="e.g. Weekly groceries" autoFocus fullWidth size="small"
+        />
 
-        <div className="mrc-row">
-          <label className="mrc-field">
-            <span>Amount (€)</span>
-            <input value={amount} onChange={(e) => setAmount(e.target.value)}
-              inputMode="decimal" placeholder="0.00" />
-          </label>
-          <label className="mrc-field">
-            <span>Date</span>
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-          </label>
-        </div>
+        <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1.5 }}>
+          <TextField
+            label="Amount (€)" value={amount} onChange={(e) => setAmount(e.target.value)}
+            slotProps={{ htmlInput: { inputMode: "decimal" } }}
+            placeholder="0.00" size="small"
+          />
+          <TextField
+            label="Date" type="date" value={date} onChange={(e) => setDate(e.target.value)}
+            size="small" slotProps={{ inputLabel: { shrink: true } }}
+          />
+        </Box>
 
-        <label className="mrc-field">
-          <span>Category</span>
-          <select value={cat} onChange={(e) => setCat(e.target.value as CategoryName)}>
-            <optgroup label="Income">
-              {byType("income").map((c) => <option key={c} value={c}>{c}</option>)}
-            </optgroup>
-            <optgroup label="Expenses">
-              {byType("expense").map((c) => <option key={c} value={c}>{c}</option>)}
-            </optgroup>
-          </select>
-        </label>
+        <TextField
+          select label="Category" value={cat}
+          onChange={(e) => setCat(e.target.value as CategoryName)}
+          size="small" fullWidth
+        >
+          <ListSubheader>Income</ListSubheader>
+          {byType("income").map((c) => <MenuItem key={c} value={c}>{c}</MenuItem>)}
+          <ListSubheader>Expenses</ListSubheader>
+          {byType("expense").map((c) => <MenuItem key={c} value={c}>{c}</MenuItem>)}
+        </TextField>
 
-        {error && <div className="mrc-error">{error}</div>}
+        {error && <Alert severity="error" onClose={() => setError("")}>{error}</Alert>}
+      </DialogContent>
 
-        <div className="mrc-modal-actions">
-          <button className="mrc-btn ghost" onClick={onClose}>Cancel</button>
-          <button className="mrc-btn primary" onClick={submit}>Save Transaction</button>
-        </div>
-      </div>
-    </div>
+      <DialogActions sx={{ px: 3, pb: 2.5 }}>
+        <Button onClick={onClose} color="inherit">Cancel</Button>
+        <Button onClick={submit} variant="contained" color="primary">Save Transaction</Button>
+      </DialogActions>
+    </Dialog>
   );
 }

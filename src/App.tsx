@@ -1,4 +1,6 @@
 import { useState, useMemo } from "react";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
 import Topbar from "./components/Topbar";
 import Hero from "./components/Hero";
 import StatCards from "./components/StatCards";
@@ -31,25 +33,28 @@ export default function App() {
 
   return (
     <SettingsProvider>
-      <div className="mrc-root">
+      <Box sx={{ minHeight: "100vh" }}>
         <Topbar months={months} period={period} onPeriod={setPeriod}
           onAdd={() => setFormOpen(true)} onReset={reset} />
 
-        <main className="mrc-main">
+        <Container component="main" maxWidth="lg" sx={{ pt: 4, pb: 8 }}>
           <Hero balance={balance} count={items.length} />
           <StatCards stats={stats} period={period} />
 
-          <section className="mrc-charts">
+          <Box sx={{
+            display: "grid", gap: 2.5, mb: 2.5,
+            gridTemplateColumns: { xs: "1fr", md: "1.7fr 1fr" },
+          }}>
             <BalanceChart data={timeline} />
             <CategoryDonut breakdown={breakdown} totalExpense={stats.expense} period={period} />
-          </section>
+          </Box>
 
           <TransactionList items={periodItems} query={query} onQuery={setQuery}
             catFilter={catFilter} onCatFilter={setCatFilter} onRemove={remove} />
-        </main>
+        </Container>
 
-        {formOpen && <AddForm onClose={() => setFormOpen(false)} onAdd={add} />}
-      </div>
+        <AddForm open={formOpen} onClose={() => setFormOpen(false)} onAdd={add} />
+      </Box>
     </SettingsProvider>
   );
 }

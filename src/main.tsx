@@ -1,10 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import "./styles.css";
+import { AppThemeProvider } from "./AppThemeProvider";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <App />
+    <AppThemeProvider>
+      <App />
+    </AppThemeProvider>
   </React.StrictMode>
 );

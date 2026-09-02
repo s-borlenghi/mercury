@@ -18,9 +18,11 @@ US formatting.
 - React 18 with hooks and context — no external state library, state kept
   minimal and derived data memoized
 - TypeScript in strict mode, front to back (components, hooks, selectors)
+- A custom MUI theme (light + dark, persisted) instead of default Material
+  styling — own palette, typography and component overrides
 - Unit and render tests with Vitest, run in CI on every push
 - Data-visualization work with Recharts (custom tooltips, gradients, a donut
-  chart with a computed center label)
+  chart with a computed center label), restyled to follow the active theme
 - Complexity-aware design: derived values are documented and kept linear —
   see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - Static-site deployment via GitHub Actions, no backend required
@@ -29,9 +31,10 @@ US formatting.
 ## Features
 
 - Total balance with an animated count-up (serif display numerals)
+- Light / dark theme, remembered across reloads
 - Balance-over-time area chart
 - Expense breakdown by category (donut chart)
-- Add transactions through a validated form
+- Add transactions through a validated dialog
 - Text search and filters by period and category
 - Currency switcher (EUR / USD / GBP) via React context
 - Data persists across reloads (localStorage), with a reset to sample data
@@ -40,6 +43,8 @@ US formatting.
 ## Stack
 
 - **React 18 + TypeScript** (hooks, context, function components)
+- **MUI** — component library and theming (custom light/dark palette, no
+  default Material look)
 - **Vite** — dev server and build
 - **Recharts** — charts
 - **lucide-react** — icons
@@ -63,7 +68,8 @@ src/
 ├── App.tsx                 # composition + memoized derived state
 ├── main.tsx                # entry point
 ├── types.ts                # shared domain types
-├── styles.css              # "Ledger" theme (pine + sienna on cool paper)
+├── theme.tsx                # MUI theme (light/dark "Ledger" palette) + mode context
+├── AppThemeProvider.tsx     # wires the theme + CssBaseline around <App>
 ├── context/
 │   └── Settings.tsx        # currency + money formatter (React context)
 ├── components/             # UI components, one per responsibility
@@ -105,8 +111,12 @@ src/
   localStorage, so transactions survive reloads on a purely static host like
   GitHub Pages. It's SSR/test-safe: with no `window`, it behaves like plain
   `useState`.
-- **Hand-written styles.** No CSS framework — the palette, spacing and layout
-  are defined in a single stylesheet.
+- **Theming, not default Material.** `theme.tsx` builds a light and a dark
+  MUI theme from the same pine/sienna "Ledger" palette the app has always
+  used, with its own typography, radii and component overrides — the mode
+  is picked up by a small context and mirrored to localStorage. Charts read
+  their colors from the active `Theme` via `useTheme`, so Recharts follows
+  the mode too.
 
 ## Architecture & performance
 

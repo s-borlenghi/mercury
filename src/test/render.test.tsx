@@ -1,8 +1,13 @@
 import { describe, it, expect } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import App from "../App";
+import { AppThemeProvider } from "../AppThemeProvider";
 describe("App (render)", () => {
-  const html = renderToStaticMarkup(<App />);
+  const html = renderToStaticMarkup(
+    <AppThemeProvider>
+      <App />
+    </AppThemeProvider>
+  );
 
   it("renders without errors and is not empty", () => {
     expect(html.length).toBeGreaterThan(500);

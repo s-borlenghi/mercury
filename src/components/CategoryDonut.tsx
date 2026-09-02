@@ -1,4 +1,9 @@
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
+import { useTheme } from "@mui/material/styles";
 import { periodCaption } from "../lib/format";
 import { useSettings } from "../context/Settings";
 import type { BreakdownSlice, Period } from "../types";
@@ -10,13 +15,20 @@ interface TipProps {
 
 function DonutTip({ active, payload }: TipProps) {
   const { formatMoney } = useSettings();
+  const theme = useTheme();
   if (!active || !payload?.length) return null;
   const p = payload[0].payload;
   return (
-    <div className="mrc-tip">
-      <div className="mrc-tip-k">{p.cat}</div>
-      <div className="mrc-tip-v">{formatMoney(p.value)} · {Math.round(p.pct * 100)}%</div>
-    </div>
+    <Box sx={{
+      bgcolor: theme.palette.mode === "dark" ? "#080b09" : theme.palette.text.primary,
+      color: theme.palette.background.paper, borderRadius: "8px", px: 1.4, py: 1,
+      boxShadow: "0 8px 22px rgba(0,0,0,.3)",
+    }}>
+      <Typography sx={{ fontSize: 11.5, opacity: 0.7, mb: 0.25 }}>{p.cat}</Typography>
+      <Typography sx={{ fontSize: 14, fontWeight: 500, fontVariantNumeric: "tabular-nums" }}>
+        {formatMoney(p.value)} · {Math.round(p.pct * 100)}%
+      </Typography>
+    </Box>
   );
 }
 
@@ -30,17 +42,19 @@ export default function CategoryDonut({ breakdown, totalExpense, period }: Donut
   const { formatMoney } = useSettings();
 
   return (
-    <div className="mrc-panel">
-      <div className="mrc-panel-head">
-        <h2>Expenses by Category</h2>
-        <span className="mrc-panel-sub">{periodCaption(period)}</span>
-      </div>
+    <Paper sx={{ p: "20px 22px" }}>
+      <Box sx={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 1.5, mb: 2 }}>
+        <Typography variant="subtitle2" sx={{ fontWeight: 600, fontSize: 15 }}>Expenses by Category</Typography>
+        <Typography variant="caption" color="text.secondary">{periodCaption(period)}</Typography>
+      </Box>
 
       {breakdown.length === 0 ? (
-        <div className="mrc-empty">No expenses in this period.</div>
+        <Box sx={{ py: 3.5, px: 1, color: "text.secondary", fontSize: 13.5, textAlign: "center" }}>
+          No expenses in this period.
+        </Box>
       ) : (
-        <div className="mrc-donut-wrap">
-          <div className="mrc-donut">
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <Box sx={{ position: "relative", width: 172, height: 172, flex: "none" }}>
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie data={breakdown} dataKey="value" nameKey="cat"
@@ -50,22 +64,36 @@ export default function CategoryDonut({ breakdown, totalExpense, period }: Donut
                 <Tooltip content={<DonutTip />} />
               </PieChart>
             </ResponsiveContainer>
-            <div className="mrc-donut-center">
-              <span>{formatMoney(totalExpense)}</span>
-              <small>total expenses</small>
-            </div>
-          </div>
-          <ul className="mrc-legend">
+            <Box sx={{
+              position: "absolute", inset: 0, display: "flex", flexDirection: "column",
+              alignItems: "center", justifyContent: "center", pointerEvents: "none", textAlign: "center",
+            }}>
+              <Typography sx={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: 17, fontWeight: 500 }}>
+                {formatMoney(totalExpense)}
+              </Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ mt: 0.3 }}>
+                total expenses
+              </Typography>
+            </Box>
+          </Box>
+          <Stack spacing={1.25} sx={{ flex: 1, minWidth: 0 }}>
             {breakdown.map((d) => (
-              <li key={d.cat}>
-                <span className="mrc-dot" style={{ background: d.color }} />
-                <span className="mrc-legend-name">{d.cat}</span>
-                <span className="mrc-legend-pct">{Math.round(d.pct * 100)}%</span>
-              </li>
+              <Box key={d.cat} sx={{ display: "flex", alignItems: "center", gap: 1.1, fontSize: 13 }}>
+                <Box sx={{ width: 9, height: 9, borderRadius: "2px", flex: "none", bgcolor: d.color }} />
+                <Typography sx={{
+                  color: "text.primary", flex: 1, whiteSpace: "nowrap", overflow: "hidden",
+                  textOverflow: "ellipsis", fontSize: 13,
+                }}>
+                  {d.cat}
+                </Typography>
+                <Typography sx={{ color: "text.secondary", fontVariantNumeric: "tabular-nums", fontSize: 13 }}>
+                  {Math.round(d.pct * 100)}%
+                </Typography>
+              </Box>
             ))}
-          </ul>
-        </div>
+          </Stack>
+        </Box>
       )}
-    </div>
+    </Paper>
   );
 }
