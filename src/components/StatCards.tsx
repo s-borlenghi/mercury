@@ -35,11 +35,11 @@ export default function StatCards({ stats, period }: { stats: Stats; period: Per
 
   return (
     <section className="mrc-stats">
-      <Cell label="Entrate" value={stats.income} tone="up" caption={caption}
+      <Cell label="Income" value={stats.income} tone="up" caption={caption}
         fmt={formatMoney} icon={<ArrowDownLeft size={15} />} />
-      <Cell label="Uscite" value={stats.expense} tone="down" caption={caption}
+      <Cell label="Expenses" value={stats.expense} tone="down" caption={caption}
         fmt={formatMoney} icon={<ArrowUpRight size={15} />} />
-      <Cell label="Netto periodo" value={stats.net} tone={netTone} caption={caption} signed
+      <Cell label="Net" value={stats.net} tone={netTone} caption={caption} signed
         fmt={formatMoney}
         icon={stats.net >= 0 ? <TrendingUp size={15} /> : <TrendingDown size={15} />} />
     </section>

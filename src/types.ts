@@ -1,8 +1,8 @@
 export type TransactionType = "income" | "expense";
 
 export type CategoryName =
-  | "Stipendio" | "Extra" | "Affitto" | "Spesa"
-  | "Trasporti" | "Ristoranti" | "Bollette" | "Svago";
+  | "Salary" | "Extra" | "Rent" | "Groceries"
+  | "Transport" | "Restaurants" | "Bills" | "Leisure";
 
 export interface Category {
   type: TransactionType;
@@ -11,14 +11,13 @@ export interface Category {
 
 export interface Transaction {
   id: number;
-  date: string;        // ISO "YYYY-MM-DD"
+  date: string;
   desc: string;
   cat: CategoryName;
   amount: number;
   type: TransactionType;
 }
 
-// What the form provides; id and type are derived when the transaction is added.
 export type NewTransaction = Omit<Transaction, "id" | "type">;
 
 export interface Stats {
@@ -40,5 +39,5 @@ export interface TimelinePoint {
   saldo: number;
 }
 
-export type Period = "all" | string;   // "all" or a month key like "2026-08"
+export type Period = "all" | string;
 export type Currency = "EUR" | "USD" | "GBP";

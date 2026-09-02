@@ -21,8 +21,6 @@ export default function TransactionList({
 }: TransactionListProps) {
   const { formatMoney } = useSettings();
 
-  // One filtering pass, then sort newest-first. Recomputed only when the
-  // inputs change, so typing in the search box stays cheap.
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
     return items
@@ -36,17 +34,17 @@ export default function TransactionList({
   return (
     <section className="mrc-panel">
       <div className="mrc-panel-head mrc-tx-head">
-        <h2>Movimenti</h2>
+        <h2>Transactions</h2>
         <div className="mrc-tx-tools">
           <div className="mrc-search">
             <Search size={15} />
             <input value={query} onChange={(e) => onQuery(e.target.value)}
-              placeholder="Cerca…" aria-label="Cerca movimenti" />
+              placeholder="Search…" aria-label="Search transactions" />
           </div>
           <select className="mrc-select" value={catFilter}
             onChange={(e) => onCatFilter(e.target.value as CatFilter)}
-            aria-label="Filtra per categoria">
-            <option value="all">Tutte le categorie</option>
+            aria-label="Filter by category">
+            <option value="all">All categories</option>
             {CATEGORY_NAMES.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
         </div>
@@ -54,7 +52,7 @@ export default function TransactionList({
 
       {visible.length === 0 ? (
         <div className="mrc-empty">
-          Nessun movimento trovato. Prova a cambiare filtri o periodo.
+          No transactions found. Try changing filters or period.
         </div>
       ) : (
         <ul className="mrc-tx-list">
@@ -69,7 +67,7 @@ export default function TransactionList({
                 {t.type === "income" ? "+" : "−"} {formatMoney(t.amount).replace("-", "")}
               </span>
               <button className="mrc-tx-del" onClick={() => onRemove(t.id)}
-                aria-label={`Elimina ${t.desc}`}>
+                aria-label={`Delete ${t.desc}`}>
                 <Trash2 size={15} />
               </button>
             </li>

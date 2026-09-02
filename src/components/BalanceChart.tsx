@@ -26,8 +26,8 @@ export default function BalanceChart({ data }: { data: TimelinePoint[] }) {
   return (
     <div className="mrc-panel mrc-panel-wide">
       <div className="mrc-panel-head">
-        <h2>Andamento del saldo</h2>
-        <span className="mrc-panel-sub">saldo cumulato, tutti i movimenti</span>
+        <h2>Balance Over Time</h2>
+        <span className="mrc-panel-sub">cumulative balance, all transactions</span>
       </div>
       <div className="mrc-chart">
         <ResponsiveContainer width="100%" height="100%">

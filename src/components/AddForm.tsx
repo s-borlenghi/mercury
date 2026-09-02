@@ -11,14 +11,14 @@ interface AddFormProps {
 export default function AddForm({ onClose, onAdd }: AddFormProps) {
   const [desc, setDesc] = useState("");
   const [amount, setAmount] = useState("");
-  const [cat, setCat] = useState<CategoryName>("Spesa");
+  const [cat, setCat] = useState<CategoryName>("Groceries");
   const [date, setDate] = useState("2026-09-02");
   const [error, setError] = useState("");
 
   const submit = () => {
     const value = parseFloat(amount.replace(",", "."));
-    if (!desc.trim()) return setError("Inserisci una descrizione.");
-    if (!(value > 0)) return setError("L'importo deve essere maggiore di zero.");
+    if (!desc.trim()) return setError("Please enter a description.");
+    if (!(value > 0)) return setError("Amount must be greater than zero.");
     onAdd({ desc: desc.trim(), amount: Math.round(value * 100) / 100, cat, date });
     onClose();
   };
@@ -34,40 +34,40 @@ export default function AddForm({ onClose, onAdd }: AddFormProps) {
 
   return (
     <div className="mrc-overlay" onMouseDown={onClose}>
-      <div className="mrc-modal" role="dialog" aria-label="Nuovo movimento"
+      <div className="mrc-modal" role="dialog" aria-label="New Transaction"
         onMouseDown={(e) => e.stopPropagation()}>
         <div className="mrc-modal-head">
-          <h3>Nuovo movimento</h3>
-          <button className="mrc-icon-btn" onClick={onClose} aria-label="Chiudi">
+          <h3>New Transaction</h3>
+          <button className="mrc-icon-btn" onClick={onClose} aria-label="Close">
             <X size={18} />
           </button>
         </div>
 
         <label className="mrc-field">
-          <span>Descrizione</span>
+          <span>Description</span>
           <input value={desc} onChange={(e) => setDesc(e.target.value)}
-            placeholder="es. Spesa settimanale" autoFocus />
+            placeholder="e.g. Weekly groceries" autoFocus />
         </label>
 
         <div className="mrc-row">
           <label className="mrc-field">
-            <span>Importo (€)</span>
+            <span>Amount (€)</span>
             <input value={amount} onChange={(e) => setAmount(e.target.value)}
-              inputMode="decimal" placeholder="0,00" />
+              inputMode="decimal" placeholder="0.00" />
           </label>
           <label className="mrc-field">
-            <span>Data</span>
+            <span>Date</span>
             <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
           </label>
         </div>
 
         <label className="mrc-field">
-          <span>Categoria</span>
+          <span>Category</span>
           <select value={cat} onChange={(e) => setCat(e.target.value as CategoryName)}>
-            <optgroup label="Entrate">
+            <optgroup label="Income">
               {byType("income").map((c) => <option key={c} value={c}>{c}</option>)}
             </optgroup>
-            <optgroup label="Uscite">
+            <optgroup label="Expenses">
               {byType("expense").map((c) => <option key={c} value={c}>{c}</option>)}
             </optgroup>
           </select>
@@ -76,8 +76,8 @@ export default function AddForm({ onClose, onAdd }: AddFormProps) {
         {error && <div className="mrc-error">{error}</div>}
 
         <div className="mrc-modal-actions">
-          <button className="mrc-btn ghost" onClick={onClose}>Annulla</button>
-          <button className="mrc-btn primary" onClick={submit}>Salva movimento</button>
+          <button className="mrc-btn ghost" onClick={onClose}>Cancel</button>
+          <button className="mrc-btn primary" onClick={submit}>Save Transaction</button>
         </div>
       </div>
     </div>

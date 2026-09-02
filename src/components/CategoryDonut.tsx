@@ -32,12 +32,12 @@ export default function CategoryDonut({ breakdown, totalExpense, period }: Donut
   return (
     <div className="mrc-panel">
       <div className="mrc-panel-head">
-        <h2>Uscite per categoria</h2>
+        <h2>Expenses by Category</h2>
         <span className="mrc-panel-sub">{periodCaption(period)}</span>
       </div>
 
       {breakdown.length === 0 ? (
-        <div className="mrc-empty">Nessuna uscita nel periodo.</div>
+        <div className="mrc-empty">No expenses in this period.</div>
       ) : (
         <div className="mrc-donut-wrap">
           <div className="mrc-donut">
@@ -52,7 +52,7 @@ export default function CategoryDonut({ breakdown, totalExpense, period }: Donut
             </ResponsiveContainer>
             <div className="mrc-donut-center">
               <span>{formatMoney(totalExpense)}</span>
-              <small>totale uscite</small>
+              <small>total expenses</small>
             </div>
           </div>
           <ul className="mrc-legend">

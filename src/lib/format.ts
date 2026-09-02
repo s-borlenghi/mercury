@@ -1,16 +1,16 @@
 import type { Period } from "../types";
 
-const MONTHS = ["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","dic"];
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-export const monthKey = (iso: string): string => iso.slice(0, 7);   // -> "2026-08"
+export const monthKey = (iso: string): string => iso.slice(0, 7);
 
-export const monthLabel = (key: string): string => {                // -> "ago 2026"
+export const monthLabel = (key: string): string => {
   const [y, m] = key.split("-");
   return `${MONTHS[+m - 1]} ${y}`;
 };
 
-export const dayLabel = (iso: string): string =>                    // -> "24 ago"
-  new Date(iso).toLocaleDateString("it-IT", { day: "2-digit", month: "short" });
+export const dayLabel = (iso: string): string =>
+  new Date(iso).toLocaleDateString("en-US", { day: "2-digit", month: "short" });
 
 export const periodCaption = (period: Period): string =>
-  period === "all" ? "tutto il periodo" : monthLabel(period);
+  period === "all" ? "all time" : monthLabel(period);

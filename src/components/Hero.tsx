@@ -12,12 +12,12 @@ export default function Hero({ balance, count }: HeroProps) {
 
   return (
     <section className="mrc-hero">
-      <div className="mrc-hero-label">Saldo totale</div>
+      <div className="mrc-hero-label">Total Balance</div>
       <div className={"mrc-hero-value " + (balance < 0 ? "neg" : "pos")}>
         {formatMoney(animated)}
       </div>
       <div className="mrc-hero-meta">
-        {count} movimenti · salvati sul dispositivo
+        {count} transactions · saved locally
       </div>
     </section>
   );

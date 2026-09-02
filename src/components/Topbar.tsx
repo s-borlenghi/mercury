@@ -29,15 +29,15 @@ export default function Topbar({ months, period, onPeriod, onAdd, onReset }: Top
       <div className="mrc-brand">
         <span className="mrc-logo"><Wallet size={18} strokeWidth={2} /></span>
         <div>
-          <div className="mrc-brandname">Mercury</div>
-          <div className="mrc-brandsub">Finanze personali</div>
+          <div className="mrc-brandname">Balance</div>
+          <div className="mrc-brandsub">Personal Finance</div>
         </div>
       </div>
 
       <div className="mrc-controls">
-        <div className="mrc-period" role="tablist" aria-label="Periodo">
+        <div className="mrc-period" role="tablist" aria-label="Period">
           <PeriodButton active={period === "all"} onClick={() => onPeriod("all")}>
-            Tutto
+            All
           </PeriodButton>
           {months.map((m) => (
             <PeriodButton key={m} active={period === m} onClick={() => onPeriod(m)}>
@@ -47,17 +47,17 @@ export default function Topbar({ months, period, onPeriod, onAdd, onReset }: Top
         </div>
 
         <button className="mrc-icon-btn ghost-line" onClick={onReset}
-          aria-label="Ripristina dati di esempio" title="Ripristina dati di esempio">
+          aria-label="Reset to sample data" title="Reset to sample data">
           <RotateCcw size={16} />
         </button>
 
-        <select className="mrc-currency" value={currency} aria-label="Valuta"
+        <select className="mrc-currency" value={currency} aria-label="Currency"
           onChange={(e) => setCurrency(e.target.value as Currency)}>
           {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
 
         <button className="mrc-add" onClick={onAdd}>
-          <Plus size={16} strokeWidth={2.4} /> Aggiungi
+          <Plus size={16} strokeWidth={2.4} /> Add
         </button>
       </div>
     </header>
