@@ -4,15 +4,27 @@ A React application for tracking income and expenses. Add or remove a
 transaction and everything — balance, charts and category breakdown —
 recomputes in real time.
 
-The interface is localized in Italian; all code and documentation are in
-English.
+UI text is in English; money is formatted with `Intl.NumberFormat` using
+the selected currency's own locale (EUR follows Italian conventions, e.g.
+`4452,70 €`), so amounts read naturally instead of always defaulting to
+US formatting.
 
-> **Live demo:** _(GitHub Pages URL appears here after the first deploy —
-> see "Deploy" below)_
+**Live demo:** https://s-borlenghi.github.io/mercury/
 
 ![Screenshot](docs/screenshot.png)
-<!-- Replace with a real screenshot: run the app, capture the screen and
-     save it as docs/screenshot.png -->
+
+## Skills demonstrated
+
+- React 18 with hooks and context — no external state library, state kept
+  minimal and derived data memoized
+- TypeScript in strict mode, front to back (components, hooks, selectors)
+- Unit and render tests with Vitest, run in CI on every push
+- Data-visualization work with Recharts (custom tooltips, gradients, a donut
+  chart with a computed center label)
+- Complexity-aware design: derived values are documented and kept linear —
+  see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- Static-site deployment via GitHub Actions, no backend required
+- Accessibility basics: labelled controls, keyboard focus, `prefers-reduced-motion`
 
 ## Features
 
@@ -79,7 +91,7 @@ src/
 
 ## Design decisions
 
-- **Logic separated from the UI.** Calculations live in `lib/selectors.js` as
+- **Logic separated from the UI.** Calculations live in `lib/selectors.ts` as
   pure functions: reusable, easy to read and covered by tests. Components only
   decide how data is displayed.
 - **Memoized derived state.** Totals and chart series aren't duplicated in
@@ -118,11 +130,10 @@ publishes to GitHub Pages on every push to `main`.
 3. Push to `main` (or run the workflow manually). The site publishes at
    `https://<username>.github.io/<repo-name>/`.
 
-`vite.config.js` uses `base: "./"`, so the build works under the repo
+`vite.config.ts` uses `base: "./"`, so the build works under the repo
 subpath without hardcoding the repository name.
 
 ## Possible extensions
 
-Data persistence (localStorage or a backend), editing existing transactions,
-CSV export, real currency conversion with live FX rates, monthly budgets with
-over-spend alerts.
+Editing existing transactions, CSV export, real currency conversion with
+live FX rates, monthly budgets with over-spend alerts.

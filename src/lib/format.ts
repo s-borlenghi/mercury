@@ -9,8 +9,10 @@ export const monthLabel = (key: string): string => {
   return `${MONTHS[+m - 1]} ${y}`;
 };
 
-export const dayLabel = (iso: string): string =>
-  new Date(iso).toLocaleDateString("en-US", { day: "2-digit", month: "short" });
+export const dayLabel = (iso: string): string => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString("en-US", { day: "2-digit", month: "short" });
+};
 
 export const periodCaption = (period: Period): string =>
   period === "all" ? "all time" : monthLabel(period);

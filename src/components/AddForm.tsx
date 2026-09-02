@@ -8,11 +8,17 @@ interface AddFormProps {
   onAdd: (t: NewTransaction) => void;
 }
 
+const todayLocal = (): string => {
+  const d = new Date();
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+};
+
 export default function AddForm({ onClose, onAdd }: AddFormProps) {
   const [desc, setDesc] = useState("");
   const [amount, setAmount] = useState("");
   const [cat, setCat] = useState<CategoryName>("Groceries");
-  const [date, setDate] = useState("2026-09-02");
+  const [date, setDate] = useState(todayLocal);
   const [error, setError] = useState("");
 
   const submit = () => {
