@@ -12,6 +12,7 @@ import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import ListSubheader from "@mui/material/ListSubheader";
 import { CATEGORIES, CATEGORY_NAMES } from "../data/categories";
+import { MAX_DESC_LENGTH, containsProfanity, sanitizeDesc } from "../lib/validate";
 import type { CategoryName, NewTransaction } from "../types";
 
 interface AddFormProps {
@@ -35,9 +36,12 @@ export default function AddForm({ open, onClose, onAdd }: AddFormProps) {
 
   const submit = () => {
     const value = parseFloat(amount.replace(",", "."));
-    if (!desc.trim()) return setError("Please enter a description.");
+    const cleanDesc = sanitizeDesc(desc);
+    if (!cleanDesc) return setError("Please enter a description.");
+    if (cleanDesc.length > MAX_DESC_LENGTH) return setError(`Description must be ${MAX_DESC_LENGTH} characters or fewer.`);
+    if (containsProfanity(cleanDesc)) return setError("Please keep the description appropriate.");
     if (!(value > 0)) return setError("Amount must be greater than zero.");
-    onAdd({ desc: desc.trim(), amount: Math.round(value * 100) / 100, cat, date });
+    onAdd({ desc: cleanDesc, amount: Math.round(value * 100) / 100, cat, date });
     onClose();
   };
 
@@ -60,6 +64,7 @@ export default function AddForm({ open, onClose, onAdd }: AddFormProps) {
         <TextField
           label="Description" value={desc} onChange={(e) => setDesc(e.target.value)}
           placeholder="e.g. Weekly groceries" autoFocus fullWidth size="small"
+          slotProps={{ htmlInput: { maxLength: MAX_DESC_LENGTH } }}
         />
 
         <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1.5 }}>
