@@ -1,8 +1,13 @@
 # Mercury — Personal Finance Dashboard
 
-A React application for tracking income and expenses. Add or remove a
-transaction and everything — balance, charts and category breakdown —
-recomputes in real time.
+A React app for tracking income and expenses. Add or remove a transaction
+and everything — balance, charts, category breakdown — recomputes in real
+time.
+
+It's small on purpose, sized to be read start to finish, but built with the
+same discipline I'd bring to something bigger: a single source of truth,
+pure derivations instead of duplicated state, and a theme of its own rather
+than whatever a component library looks like out of the box.
 
 UI text is in English; money is formatted with `Intl.NumberFormat` using
 the selected currency's own locale (EUR follows Italian conventions, e.g.
@@ -12,21 +17,6 @@ US formatting.
 **Live demo:** https://s-borlenghi.github.io/mercury/
 
 ![Screenshot](docs/screenshot.png)
-
-## Skills demonstrated
-
-- React 18 with hooks and context — no external state library, state kept
-  minimal and derived data memoized
-- TypeScript in strict mode, front to back (components, hooks, selectors)
-- A custom MUI theme (light + dark, persisted) instead of default Material
-  styling — own palette, typography and component overrides
-- Unit and render tests with Vitest, run in CI on every push
-- Data-visualization work with Recharts (custom tooltips, gradients, a donut
-  chart with a computed center label), restyled to follow the active theme
-- Complexity-aware design: derived values are documented and kept linear —
-  see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
-- Static-site deployment via GitHub Actions, no backend required
-- Accessibility basics: labelled controls, keyboard focus, `prefers-reduced-motion`
 
 ## Features
 
@@ -68,7 +58,7 @@ src/
 ├── App.tsx                 # composition + memoized derived state
 ├── main.tsx                # entry point
 ├── types.ts                # shared domain types
-├── theme.tsx                # MUI theme (light/dark "Ledger" palette) + mode context
+├── theme.tsx               # MUI theme (light/dark "Ledger" palette) + mode context
 ├── AppThemeProvider.tsx     # wires the theme + CssBaseline around <App>
 ├── context/
 │   └── Settings.tsx        # currency + money formatter (React context)
@@ -124,7 +114,9 @@ The app keeps a single source of truth (the transactions) and derives every
 view from it with memoized pure functions. Each derivation is a single `O(n)`
 pass except the two sorts (balance timeline and transaction list), which are
 `O(n log n)`; memoization means typing in the search box never recomputes the
-balance or the timeline.
+balance or the timeline. Adding a transaction is the one `O(n)` write path —
+`useTransactions.add` derives the next id from the current max — which is
+free at this scale and called out explicitly rather than left as a surprise.
 
 A fuller write-up — data flow, a per-function complexity table, the memoization
 strategy and a scaling roadmap — is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).

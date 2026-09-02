@@ -47,7 +47,6 @@ export default function AddForm({ open, onClose, onAdd }: AddFormProps) {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs"
       aria-label="New Transaction"
-      keepMounted={false}
       slotProps={{ transition: { onExited: () => { setDesc(""); setAmount(""); setError(""); setDate(todayLocal()); } } }}
     >
       <DialogTitle sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", pb: 1 }}>

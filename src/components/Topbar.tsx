@@ -52,7 +52,6 @@ export default function Topbar({ months, period, onPeriod, onAdd, onReset }: Top
             value={period}
             exclusive
             onChange={(_, next) => next && onPeriod(next)}
-            role="tablist"
             aria-label="Period"
             size="small"
             sx={{
@@ -63,9 +62,9 @@ export default function Topbar({ months, period, onPeriod, onAdd, onReset }: Top
               gap: "2px",
             }}
           >
-            <ToggleButton value="all" role="tab">All</ToggleButton>
+            <ToggleButton value="all">All</ToggleButton>
             {months.map((m) => (
-              <ToggleButton key={m} value={m} role="tab">{monthLabel(m)}</ToggleButton>
+              <ToggleButton key={m} value={m}>{monthLabel(m)}</ToggleButton>
             ))}
           </ToggleButtonGroup>
 

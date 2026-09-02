@@ -86,7 +86,6 @@ export function buildTheme(mode: ColorMode): Theme {
           paper: ({ theme }) => ({
             backgroundImage: "none",
             backgroundColor: isDark ? "#161d19" : theme.palette.background.paper,
-            backgroundAttachment: "unset",
             border: `1px solid ${theme.palette.divider}`,
             boxShadow: isDark
               ? "0 24px 60px rgba(0,0,0,.55)"

@@ -52,10 +52,16 @@ Let `n` = number of transactions, `k` = number of categories (fixed, ≤ 8),
 | `availableMonths`   | one pass into a Set + sort    | O(n + m log m) |
 | `buildTimeline`     | sort, then one pass           | O(n log n)     |
 | list view (filter + sort) | one filter + sort       | O(n log n)     |
+| `useTransactions.add` | reduce over items for the next id | O(n)     |
 
 Since `k` and `m` are tiny and bounded, the only super-linear cost is the two
 sorts (the balance timeline and the transaction list). Everything else is a
-single linear pass.
+single linear pass — including `add`, which is a write path rather than a
+read model, so it isn't memoized: every add really does walk the list once
+to find the current max id. That's fine at a few dozen or a few thousand
+rows; if this were tracking years of daily transactions I'd swap it for an
+id counter kept in a ref, trading the O(n) walk for O(1) at the cost of one
+more piece of state to keep in sync.
 
 ## Memoization strategy
 
@@ -87,6 +93,23 @@ render smoke test still sees the seed data.
 
 New ids are derived from the current maximum id rather than a module counter,
 so they stay unique even after a list has been restored from storage.
+
+## Theming
+
+The UI is built on MUI, but `theme.tsx` replaces the default Material look
+with a light and a dark variant of the same pine/sienna palette the app
+already had — `createTheme` takes the mode and returns a full `Theme`, with
+component overrides (`Paper`, `AppBar`, `Dialog`, buttons, inputs) so the
+palette actually shows up everywhere instead of just in a few accent colors.
+
+The chosen mode lives in a small context (`ColorModeProvider`) built the same
+way as the currency context: state plus a `usePersistentState` mirror, so it
+survives a reload. `AppThemeProvider` reads that mode, builds the matching
+`Theme` with `useMemo`, and wraps the app in MUI's `ThemeProvider` +
+`CssBaseline`. Recharts isn't a MUI component, so its own colors (the area
+gradient, axis ticks, tooltip background) are read from `useTheme()` inside
+`BalanceChart` and `CategoryDonut` rather than hardcoded, which is what makes
+the charts follow the mode instead of staying stuck in one palette.
 
 ## Scaling roadmap
 
