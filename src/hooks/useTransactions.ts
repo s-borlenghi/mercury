@@ -7,7 +7,9 @@ import type { Transaction, NewTransaction } from "../types";
 const STORAGE_KEY = "mercury.transactions";
 
 export function useTransactions() {
-  const [items, setItems] = usePersistentState<Transaction[]>(STORAGE_KEY, SEED);
+  // Session-scoped: this is a public demo link, so each new tab starts from
+  // the sample data instead of inheriting whatever a previous guest typed.
+  const [items, setItems] = usePersistentState<Transaction[]>(STORAGE_KEY, SEED, "session");
 
   const add = useCallback(
     (payload: NewTransaction) => {
