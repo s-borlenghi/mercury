@@ -1,36 +1,11 @@
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
-import { useTheme } from "@mui/material/styles";
 import { periodCaption } from "../lib/format";
 import { useSettings } from "../context/Settings";
 import type { BreakdownSlice, Period } from "../types";
-
-interface TipProps {
-  active?: boolean;
-  payload?: Array<{ payload: BreakdownSlice }>;
-}
-
-function DonutTip({ active, payload }: TipProps) {
-  const { formatMoney } = useSettings();
-  const theme = useTheme();
-  if (!active || !payload?.length) return null;
-  const p = payload[0].payload;
-  return (
-    <Box sx={{
-      bgcolor: theme.palette.mode === "dark" ? "#080b09" : theme.palette.text.primary,
-      color: theme.palette.common.white, borderRadius: "8px", px: 1.4, py: 1,
-      boxShadow: "0 8px 22px rgba(0,0,0,.3)",
-    }}>
-      <Typography sx={{ fontSize: 11.5, opacity: 0.7, mb: 0.25 }}>{p.cat}</Typography>
-      <Typography sx={{ fontSize: 14, fontWeight: 500, fontVariantNumeric: "tabular-nums" }}>
-        {formatMoney(p.value)} · {Math.round(p.pct * 100)}%
-      </Typography>
-    </Box>
-  );
-}
 
 interface DonutProps {
   breakdown: BreakdownSlice[];
@@ -61,7 +36,6 @@ export default function CategoryDonut({ breakdown, totalExpense, period }: Donut
                   innerRadius={52} outerRadius={78} paddingAngle={2} stroke="none">
                   {breakdown.map((d) => <Cell key={d.cat} fill={d.color} />)}
                 </Pie>
-                <Tooltip content={<DonutTip />} />
               </PieChart>
             </ResponsiveContainer>
             <Box sx={{
