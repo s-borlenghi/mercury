@@ -26,8 +26,13 @@ US formatting.
 - Expense breakdown by category (donut chart)
 - Add transactions through a validated dialog
 - Text search and filters by period and category
-- Currency switcher (EUR / USD / GBP) via React context
-- Data persists across reloads (localStorage), with a reset to sample data
+- Currency switcher (EUR / USD / GBP) with live exchange-rate conversion
+  (ECB rates via a free, keyless API), cached for a few hours
+- Data persists across reloads in the same tab (sessionStorage); a reset
+  button restores sample data, and each new tab starts clean — safe for a
+  public demo link shared with strangers
+- Transaction descriptions are sanitized and filtered against a profanity
+  blocklist before saving
 - Responsive layout, visible keyboard focus, respects `prefers-reduced-motion`
 
 ## Stack
@@ -72,16 +77,21 @@ src/
 │   └── AddForm.tsx
 ├── hooks/
 │   ├── useTransactions.ts    # transactions state + operations
-│   ├── usePersistentState.ts # useState mirrored to localStorage
+│   ├── usePersistentState.ts # useState mirrored to local/session storage
+│   ├── useExchangeRates.ts   # fetches + caches live FX rates
 │   └── useCountUp.ts         # number-animation hook
 ├── lib/
 │   ├── selectors.ts        # pure calculations (totals, series, breakdown)
-│   └── format.ts           # date + period formatting
+│   ├── format.ts           # date + period formatting
+│   ├── rates.ts            # exchange-rate API client
+│   └── validate.ts         # description sanitizing + profanity filter
 ├── data/
 │   ├── categories.ts       # domain categories + swatch colors
-│   └── seed.ts             # sample data
+│   ├── seed.ts             # sample data
+│   └── profanity.ts        # blocklist for the description filter
 └── test/
     ├── selectors.test.ts   # calculation tests
+    ├── validate.test.ts    # sanitizing + profanity filter tests
     └── render.test.tsx     # render smoke test
 ```
 
@@ -96,11 +106,25 @@ src/
   stats and the breakdown.
 - **Currency in context.** The selected currency and its formatter live in a
   small React context, so any component can format money without prop drilling.
-  Switching currency reformats the same amounts; it does not apply FX rates.
+  Amounts are entered and stored in EUR; switching currency converts through
+  a live rate fetched from a free, keyless FX API and cached in localStorage
+  for a few hours. If the rate hasn't loaded yet (or the fetch fails), the
+  raw EUR amount is shown and a tooltip on the currency picker says so,
+  rather than silently mislabeling it with the wrong currency symbol.
 - **Persistence without a backend.** `usePersistentState` mirrors state to
-  localStorage, so transactions survive reloads on a purely static host like
-  GitHub Pages. It's SSR/test-safe: with no `window`, it behaves like plain
-  `useState`.
+  Web Storage, so data survives reloads on a purely static host like GitHub
+  Pages. Transactions use sessionStorage — this is a public demo link, so
+  each new tab starts from the sample data instead of inheriting whatever a
+  previous guest typed; theme and rate-cache use localStorage, since neither
+  is guest-specific. It's SSR/test-safe: with no `window`, it behaves like
+  plain `useState`.
+- **A courtesy content filter, not a moderation system.** The Add
+  Transaction form sanitizes the description (strips control/zero-width/bidi
+  characters, caps length) and rejects common profanity and slurs before the
+  value ever reaches state. It matches whole words after normalizing simple
+  leetspeak and stretched-out spelling, so it doesn't flag ordinary text
+  that happens to contain a blocked word as a substring (e.g. "class
+  assignment" doesn't trip on "ass").
 - **Theming, not default Material.** `theme.tsx` builds a light and a dark
   MUI theme from the same pine/sienna "Ledger" palette the app has always
   used, with its own typography, radii and component overrides — the mode
@@ -137,5 +161,5 @@ subpath without hardcoding the repository name.
 
 ## Possible extensions
 
-Editing existing transactions, CSV export, real currency conversion with
-live FX rates, monthly budgets with over-spend alerts.
+Editing existing transactions, CSV export, monthly budgets with over-spend
+alerts.
