@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import Tooltip from "@mui/material/Tooltip";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
 import { alpha } from "@mui/material/styles";
@@ -24,7 +25,7 @@ interface TopbarProps {
 }
 
 export default function Topbar({ months, period, onPeriod, onAdd, onReset }: TopbarProps) {
-  const { currency, setCurrency } = useSettings();
+  const { currency, setCurrency, ratesNote } = useSettings();
   const { mode, toggle } = useColorMode();
 
   return (
@@ -84,18 +85,20 @@ export default function Topbar({ months, period, onPeriod, onAdd, onReset }: Top
             {mode === "dark" ? <Sun size={16} /> : <Moon size={16} />}
           </IconButton>
 
-          <Select
-            value={currency}
-            onChange={(e) => setCurrency(e.target.value as Currency)}
-            aria-label="Currency"
-            size="small"
-            sx={{
-              bgcolor: "background.paper", fontSize: 13, fontWeight: 500,
-              "& .MuiSelect-select": { py: "8px" },
-            }}
-          >
-            {CURRENCIES.map((c) => <MenuItem key={c} value={c}>{c}</MenuItem>)}
-          </Select>
+          <Tooltip title={ratesNote ?? ""} disableHoverListener={!ratesNote}>
+            <Select
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value as Currency)}
+              aria-label="Currency"
+              size="small"
+              sx={{
+                bgcolor: "background.paper", fontSize: 13, fontWeight: 500,
+                "& .MuiSelect-select": { py: "8px" },
+              }}
+            >
+              {CURRENCIES.map((c) => <MenuItem key={c} value={c}>{c}</MenuItem>)}
+            </Select>
+          </Tooltip>
 
           <Button
             onClick={onAdd}
