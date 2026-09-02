@@ -5,9 +5,9 @@ import {
 import type { Transaction } from "../types";
 
 const sample: Transaction[] = [
-  { id: 1, date: "2026-07-01", desc: "Stipendio", cat: "Stipendio", amount: 2000, type: "income" },
-  { id: 2, date: "2026-07-03", desc: "Affitto", cat: "Affitto", amount: 700, type: "expense" },
-  { id: 3, date: "2026-08-05", desc: "Spesa", cat: "Spesa", amount: 100, type: "expense" },
+  { id: 1, date: "2026-07-01", desc: "Salary", cat: "Salary", amount: 2000, type: "income" },
+  { id: 2, date: "2026-07-03", desc: "Rent", cat: "Rent", amount: 700, type: "expense" },
+  { id: 3, date: "2026-08-05", desc: "Groceries", cat: "Groceries", amount: 100, type: "expense" },
 ];
 
 describe("selectors", () => {
@@ -30,7 +30,7 @@ describe("selectors", () => {
 
   it("buildBreakdown sorts expenses by amount and computes percentages", () => {
     const b = buildBreakdown(sample);
-    expect(b[0].cat).toBe("Affitto");
+    expect(b[0].cat).toBe("Rent");
     expect(b[0].value + b[1].value).toBe(800);
     expect(Math.round(b[0].pct * 100)).toBe(88);
   });

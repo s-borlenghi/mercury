@@ -22,8 +22,6 @@ export default function App() {
   const [catFilter, setCatFilter] = useState<"all" | CategoryName>("all");
   const [formOpen, setFormOpen] = useState(false);
 
-  // Read models derived from the transactions. periodItems feeds both the
-  // stats and the breakdown, so the period is filtered once, not twice.
   const months = useMemo(() => availableMonths(items), [items]);
   const balance = useMemo(() => totalBalance(items), [items]);
   const timeline = useMemo(() => buildTimeline(items), [items]);
