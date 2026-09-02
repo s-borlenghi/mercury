@@ -32,14 +32,14 @@ US formatting.
 
 ## Stack
 
-- **React 18 + TypeScript** (hooks, context, function components)
+- **React 18** — hooks, context, function components
+- **TypeScript** — strict mode, checked in CI
 - **MUI** — component library and theming (custom light/dark palette, no
   default Material look)
 - **Vite** — dev server and build
 - **Recharts** — charts
 - **lucide-react** — icons
 - **Vitest** — unit tests
-- **TypeScript** — strict mode, checked in CI
 
 ## Getting started
 
