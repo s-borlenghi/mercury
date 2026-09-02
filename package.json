@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "Personal finance dashboard — React demo with real-time data and charts.",
   "type": "module",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

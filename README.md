@@ -1,5 +1,11 @@
 # Mercury — Personal Finance Dashboard
 
+[![Deploy to GitHub Pages](https://github.com/s-borlenghi/mercury/actions/workflows/deploy.yml/badge.svg)](https://github.com/s-borlenghi/mercury/actions/workflows/deploy.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+
 A React app for tracking income and expenses. Add or remove a transaction
 and everything — balance, charts, category breakdown — recomputes in real
 time.
@@ -163,3 +169,9 @@ subpath without hardcoding the repository name.
 
 Editing existing transactions, CSV export, monthly budgets with over-spend
 alerts.
+
+## License
+
+MIT © 2026 [Salvatore Borlenghi](https://github.com/s-borlenghi) — see
+[LICENSE.md](LICENSE.md). Built as a personal portfolio project; the sample
+data is fictional.
