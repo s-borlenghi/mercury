@@ -1,4 +1,4 @@
-# Saldo — Personal Finance Dashboard
+# Mercury — Personal Finance Dashboard
 
 A React application for tracking income and expenses. Add or remove a
 transaction and everything — balance, charts and category breakdown —
@@ -22,15 +22,17 @@ English.
 - Add transactions through a validated form
 - Text search and filters by period and category
 - Currency switcher (EUR / USD / GBP) via React context
+- Data persists across reloads (localStorage), with a reset to sample data
 - Responsive layout, visible keyboard focus, respects `prefers-reduced-motion`
 
 ## Stack
 
-- **React 18** (hooks, context, function components)
+- **React 18 + TypeScript** (hooks, context, function components)
 - **Vite** — dev server and build
 - **Recharts** — charts
 - **lucide-react** — icons
 - **Vitest** — unit tests
+- **TypeScript** — strict mode, checked in CI
 
 ## Getting started
 
@@ -38,6 +40,7 @@ English.
 npm install     # install dependencies
 npm run dev     # start the dev server at http://localhost:5173
 npm test        # run the tests
+npm run typecheck  # TypeScript, no emit
 npm run build   # production build in the dist/ folder
 ```
 
@@ -45,31 +48,33 @@ npm run build   # production build in the dist/ folder
 
 ```
 src/
-├── App.jsx                 # composition + memoized derived state
-├── main.jsx                # entry point
+├── App.tsx                 # composition + memoized derived state
+├── main.tsx                # entry point
+├── types.ts                # shared domain types
 ├── styles.css              # "Ledger" theme (pine + sienna on cool paper)
 ├── context/
-│   └── Settings.jsx        # currency + money formatter (React context)
+│   └── Settings.tsx        # currency + money formatter (React context)
 ├── components/             # UI components, one per responsibility
-│   ├── Topbar.jsx          #   period tabs, currency switcher, add button
-│   ├── Hero.jsx
-│   ├── StatCards.jsx
-│   ├── BalanceChart.jsx
-│   ├── CategoryDonut.jsx
-│   ├── TransactionList.jsx
-│   └── AddForm.jsx
+│   ├── Topbar.tsx          #   period tabs, currency switcher, reset, add
+│   ├── Hero.tsx
+│   ├── StatCards.tsx
+│   ├── BalanceChart.tsx
+│   ├── CategoryDonut.tsx
+│   ├── TransactionList.tsx
+│   └── AddForm.tsx
 ├── hooks/
-│   ├── useTransactions.js  # transactions state + operations
-│   └── useCountUp.js        # number-animation hook
+│   ├── useTransactions.ts    # transactions state + operations
+│   ├── usePersistentState.ts # useState mirrored to localStorage
+│   └── useCountUp.ts         # number-animation hook
 ├── lib/
-│   ├── selectors.js        # pure calculations (totals, series, breakdown)
-│   └── format.js           # date + period formatting
+│   ├── selectors.ts        # pure calculations (totals, series, breakdown)
+│   └── format.ts           # date + period formatting
 ├── data/
-│   ├── categories.js       # domain categories + swatch colors
-│   └── seed.js             # sample data
+│   ├── categories.ts       # domain categories + swatch colors
+│   └── seed.ts             # sample data
 └── test/
-    ├── selectors.test.js   # calculation tests
-    └── render.test.jsx     # render smoke test
+    ├── selectors.test.ts   # calculation tests
+    └── render.test.tsx     # render smoke test
 ```
 
 ## Design decisions
@@ -84,20 +89,23 @@ src/
 - **Currency in context.** The selected currency and its formatter live in a
   small React context, so any component can format money without prop drilling.
   Switching currency reformats the same amounts; it does not apply FX rates.
+- **Persistence without a backend.** `usePersistentState` mirrors state to
+  localStorage, so transactions survive reloads on a purely static host like
+  GitHub Pages. It's SSR/test-safe: with no `window`, it behaves like plain
+  `useState`.
 - **Hand-written styles.** No CSS framework — the palette, spacing and layout
   are defined in a single stylesheet.
 
-## Complexity
+## Architecture & performance
 
-With `n` transactions, each derived value is a single `O(n)` pass, except the
-balance timeline, which sorts once (`O(n log n)`). Every derivation is memoized,
-so it only recomputes when its inputs change; typing in the search box, for
-example, doesn't retrigger the balance or timeline calculations.
+The app keeps a single source of truth (the transactions) and derives every
+view from it with memoized pure functions. Each derivation is a single `O(n)`
+pass except the two sorts (balance timeline and transaction list), which are
+`O(n log n)`; memoization means typing in the search box never recomputes the
+balance or the timeline.
 
-At this data size the numbers are trivial — the point is keeping the passes
-linear and the work memoized rather than micro-optimizing prematurely. For very
-large lists the next steps would be debouncing the search input and virtualizing
-the transaction list.
+A fuller write-up — data flow, a per-function complexity table, the memoization
+strategy and a scaling roadmap — is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Deploy (GitHub Pages)
 
