@@ -20,7 +20,7 @@ function AreaTip({ active, payload }: TipProps) {
   return (
     <Box sx={{
       bgcolor: theme.palette.mode === "dark" ? "#080b09" : theme.palette.text.primary,
-      color: theme.palette.background.paper, borderRadius: "8px", px: 1.4, py: 1,
+      color: theme.palette.common.white, borderRadius: "8px", px: 1.4, py: 1,
       boxShadow: "0 8px 22px rgba(0,0,0,.3)",
     }}>
       <Typography sx={{ fontSize: 11.5, opacity: 0.7, mb: 0.25 }}>{dayLabel(p.date)}</Typography>
